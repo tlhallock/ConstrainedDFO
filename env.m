@@ -1,0 +1,3 @@
+addpath("poly");
+addpath("algo");
+

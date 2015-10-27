@@ -46,3 +46,17 @@ for i = 1:size(polys, 2)
 end
 
 hold off
+
+
+
+
+
+n = 2;
+d = 2;
+
+p = poly_create(n, d);
+poly_eval(p, rand(n,1))
+
+
+
+
