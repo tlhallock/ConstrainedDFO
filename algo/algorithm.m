@@ -4,25 +4,17 @@ dim = length(x0);
 
 params = algo_params_create(dim, deg);
 results = algo_results_create();
-s = algo_state_create(params, f, g, x0, deg);
+s = algo_state_create(params, f, x0, deg);
 
 s.vals(:) = f(x0);
 results.fvals = results.fvals + 1;
 
-[params, s, results, fail] = algo_poise(params, s, results);
+[params, s, results] = algo_poise(params, s, results);
 linear = 1;
 
 for step = 1:params.max_iters
   model = poly_add(s.lagrange, s.vals);
   
-  % Code to test interpolation model...
-  for i = 1:size(s.poisedSet, 1)
-    if abs(poly_eval(model, ((s.poisedSet(i,:)' - s.iterate) / s.radius))...
-     - s.f(s.poisedSet(i,:)')) > .01
-      'model is constructed wrong'
-      i
-    end
-  end
   
   g = poly_grad_eval(model, s.iterate);
   while norm(g) < params.eps_c ...
