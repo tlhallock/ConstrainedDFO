@@ -1,10 +1,7 @@
-function [results] = algorithm(f, x0, deg)
+function [results] = algorithm(params)
 
-dim = length(x0);
-
-params = algo_params_create(dim, deg);
 results = algo_results_create();
-s = algo_state_create(params, f, x0, deg);
+s = algo_state_create(params, f, params.x0, params.deg);
 
 s.vals(:) = f(x0);
 results.fvals = results.fvals + 1;
@@ -13,16 +10,18 @@ results.fvals = results.fvals + 1;
 linear = 1;
 
 for step = 1:params.max_iters
+
+    s = algo_clean_poised_set(s);
   [params, s, results] = algo_poise(params, s, results);
   linear = 1;
   
-  plot_state(params, s);
-  
   s.model = sum(diag(s.vals) * s.lagrange);
+  
+  plot_state(params, s, strcat('imgs/model.', int2str(results.iterations)));
   
   test_interpolation(params, s);
   
-  g = params.interp_grad_eval(s.model, (s.poisedSet(s.index, :) - s.model_center)/s.model_radius );
+  g = params.interp_grad_eval(s.model, ((s.poisedSet(s.index, :) - s.model_center)/s.model_radius)' );
   while norm(g) < params.eps_c ...
         && params.mu * norm(g) < s.radius  ...
         && results.iterations < params.max_iters ...
@@ -31,7 +30,7 @@ for step = 1:params.max_iters
       s.radius * s.omega,... 
         s.beta * norm(g)), s.radius);
     s = algo_clean_poised_set(s);
-    [params, s, results, fail] = algo_poise(params, s, results);
+    [params, s, results, fail] = algo_poise(para  ms, s, results);
     results.iterations = results.iterations + 1;
     linear = 1;
   end
@@ -55,32 +54,39 @@ for step = 1:params.max_iters
     end
   end
   
-  
-  
-  
-  
-  
-  
   newX = extrema.minX * s.model_radius + s.model_center;
   
   newVal = f(newX);
   results.fvals = results.fvals + 1;
   rho = (s.vals(s.index) - newVal) / (s.vals(s.index) - extrema.minVal);
   
-  plot_state(params, s, newX);
+  plot_state(params, s, strcat('imgs/newpoint.', int2str(results.iterations)), newX);
   
   if rho >= params.eta1
     s.radius = min(params.gamma_inc * s.radius, params.radius_max);
-    
-    % replace the point farthest away from the current iterate
-    [_ mIndex] = max(arrayfun(@(idx) norm(s.poisedSet(idx, :) - newX'), 1:size(s.poisedSet, 1)));
-    s.poisedSet(mIndex, :) = newX';
-    s.vals(mIndex) = newVal;
   else
     if linear
       s.radius = params.gamma * s.radius
-    else
+      
+      s = algo_clean_poised_set(s);
+    end
+  end
+  
+  if rho > params.eta0
+    % replace the point farthest away from the current iterate
+    [_ mIndex] = max(arrayfun(@(idx) norm(s.poisedSet(idx, :) - newX'), 1:size(s.poisedSet, 1)));
+    
+    s.poisedSet(mIndex, :) = s.poisedSet(1,:);
+    s.vals(mIndex) = s.vals(1);
+    
+    s.poisedSet(1, :) = newX';
+    s.vals(1) = newVal;
+    linear = 0;
+  end
+  
+  if rho < params.eta1 && !linear
       [params, s, results, fail] = algo_poise(params, s, results);
+      linear = 1;
     end
   end
   

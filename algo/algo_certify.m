@@ -1,13 +1,13 @@
-function [poisedSet, lagrange, fail, sort] = algo_certify(params, initialPoints)
+function [s, sort, fail] = algo_certify(params, s)
 
 fail    = 0;
-npoints = size(initialPoints,1);
-dim     = size(initialPoints,2);
+npoints = size(s.shiftedSet,1);
+dim     = size(s.shiftedSet,2);
 sort    = 1:npoints;
 
-if size(initialPoints, 1) != params.basis_dimension
+if size(s.shiftedSet, 1) != params.basis_dimension
   'not the right number of points 409187430'
-  size(initialPoints, 1)
+  size(s.shiftedSet, 1)
   params.basis_dimension
 end
 
@@ -20,13 +20,15 @@ V = zeros(h, p);
 %    V(i,1:p) = params.poly_basis_eval(phi, initialPoints(i,:)');
 %end
 
-V(1:npoints, :)      = params.basis_eval(initialPoints);
+V(1:npoints, :)      = params.basis_eval(s.shiftedSet);
 V((npoints + 1):h,:) = eye(p, p);
 
-testV(params, V, initialPoints);
+testV(params, V, s.shiftedSet);
 
 for i=1:p
   maxVal = max(abs(V(i:npoints,i)));
+  maxVal
+  
   if maxVal < params.xsi
     extrema = params.interp_extrema(V((npoints+1):h, i));
     
@@ -35,8 +37,6 @@ for i=1:p
   
     if abs(fVal) < params.xsi
       fail = 1;
-      lagrange = -1;
-      poisedSet = -1;
       throw 1
       return;
     end
@@ -44,10 +44,10 @@ for i=1:p
     sort(i) = -1;
     
     V(i, :) = params.basis_eval(newX') * V((npoints+1):h, :);
-    initialPoints(i, :) = newX';
+    s.shiftedSet(i, :) = newX';
     maxVal = max(abs(V(i:npoints,i)));
     
-    testV(params, V, initialPoints);
+    testV(params, V, s.shiftedSet);
   end
         
   maxRow = i-1 + find(abs(V(i:npoints, i)) == maxVal)(1);
@@ -59,22 +59,22 @@ for i=1:p
     V(i,:) = newRow;
     
     % Swap the points
-    newRow = initialPoints(maxRow,:);
-    oldRow = initialPoints(i,:);
-    initialPoints(maxRow,:) = oldRow;
-    initialPoints(i,:) = newRow;
+    newRow = s.shiftedSet(maxRow,:);
+    oldRow = s.shiftedSet(i,:);
+    s.shiftedSet(maxRow,:) = oldRow;
+    s.shiftedSet(i,:) = newRow;
     
-    % Swap the sort indices
-    newRow = sort(maxRow);
-    oldRow = sort(i);
-    sort(maxRow) = oldRow;
-    sort(i) = newRow;
+    % Swap the vals indices
+    newRow = s.vals(maxRow);
+    oldRow = s.vals(i);
+    s.vals(maxRow) = oldRow;
+    s.vals(i) = newRow;
     
-    testV(params, V, initialPoints);
+    testV(params, V, s.shiftedSet);
   end
   
   V(:,i) = V(:,i) / V(i,i);
-  testV(params, V, initialPoints);
+  testV(params, V, s.shiftedSet);
   
   for j=1:p
     if i == j
@@ -82,15 +82,14 @@ for i=1:p
     end
     V(:,j) = V(:,j) - V(i, j)*V(:, i);
   end
-  testV(params, V, initialPoints);
+  testV(params, V, s.shiftedSet);
 end
 
 %for i = 1:phi.basis_dimension
 %  lagrange{i} = poly_clone(phi, V ((npoints+1):h,i)');
 %end
 
-lagrange = V ((npoints+1):h,:)';
-poisedSet = initialPoints;
+s.lagrange = V ((npoints+1):h,:)';
 
 endfunction
 

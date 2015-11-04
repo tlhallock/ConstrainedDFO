@@ -1,4 +1,4 @@
-function plot_state(params, s, newX)
+function plot_state(params, s, filename, newX)
 
 
 m = 5;
@@ -24,7 +24,7 @@ end
   xp=s.radius*cos(ang);
   yp=s.radius*sin(ang);
 
-figure
+h = figure
 
 subplot(1,2,1)
 
@@ -50,9 +50,9 @@ hold on
   
   points = s.poisedSet;
   
-  if nargin > 2
+  if nargin > 3
     points = [points; newX']
-    colors = [colors; [0 1 1]]
+    colors = [colors; [1 0 1]]
   end
   
   scatter (points(:, 1), points(:, 2), [],  colors, 'filled');
@@ -67,15 +67,11 @@ hold on
 %  scatter(s.poisedSet(:,1)', s.poisedSet(:, 2)');
 %  scatter(s.poisedSet(s.index, 1), s.poisedSet(s.index, 2), 'Color', [1 1 0], 'd');
 
+
 hold off
 
 
 
-%hold on
-
-
-
-%hold off
-
+saveas(h, strcat(filename, 'state.png', 'png'))
 
 endfunction

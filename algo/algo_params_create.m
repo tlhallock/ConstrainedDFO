@@ -16,11 +16,11 @@ function [s] = algo_params_create(dim, deg)
   s.interp_extrema = @(c)(basis_extrema(phi, c));
   s.basis_dimension = phi.basis_dimension;
   
-  s.eta0 = 1/3;
-  s.eta1 = 2/3;
+  s.eta0 = 1/10;
+  s.eta1 = .5;
   s.gamma = .5;
   s.gamma_inc = 1.5;
-  s.eps_c = 1e-6;
+  s.eps_c = 5e-2;
   s.mu = 5;
   s.beta = 3
   s.omega = .5;
