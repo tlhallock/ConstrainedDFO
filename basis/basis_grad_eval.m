@@ -1,9 +1,7 @@
-function [q] = basis_grad_eval(p, x)
+function [q] = basis_grad_eval(p, model, x)
+  q = zeros(p.n, 1);
 
-q = zeros(p.n, 1);
-
-for var = 1:p.n
-  q(var) = poly_eval(poly_diff(p, var), x);
-end
-
+  for var = 1:p.n
+    q(var) = sum(basis_eval(basis_diff(p, var), x') .* model);
+  end
 endfunction

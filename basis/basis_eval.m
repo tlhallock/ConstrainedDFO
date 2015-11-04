@@ -1,4 +1,4 @@
-% Accepts a polynomial generated from create_poly and a column vector to evaluate it at
+% Accepts a polynomial generated from create_poly and a row vector to evaluate it at
 
 function [value] = basis_eval (p, x)
   npoints = size(x, 1);

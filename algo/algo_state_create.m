@@ -9,7 +9,7 @@ function [state] = algo_state_create(params, f, x0, deg)
   s.vals = zeros(1, length(s.poisedSet));
   
   s.radius = 1;
-  s.xmin = x0;
+  s.index = 1;
   
   s.model_center = x0;
   s.model_radius = s.radius;

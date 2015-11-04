@@ -9,7 +9,7 @@ function [s] = algo_params_create(dim, deg)
   % evaluates the basis functions at a set of points
   s.basis_eval = @(x)(basis_eval(phi, x));
   % evaluates the gradient as a given point
-  s.basis_grad_eval = @(x)(basis_grad_eval(phi, x));
+  s.interp_grad_eval = @(c, x)(basis_grad_eval(phi, c, x));
   % evaluates the a set of interpolation coefficients at a point x
   s.interp_eval = @(c, x)(basis_interp_eval(phi, c, x));
   % finds the local extrema of the basis functions with given coefficients in the unit ball about the origin
@@ -20,7 +20,7 @@ function [s] = algo_params_create(dim, deg)
   s.eta1 = 2/3;
   s.gamma = .5;
   s.gamma_inc = 1.5;
-  s.eps_c = 50;
+  s.eps_c = 1e-6;
   s.mu = 5;
   s.beta = 3
   s.omega = .5;

@@ -1,10 +1,12 @@
 function test_interpolation(params, s)
-
   % Code to test interpolation model...
   for i = 1:size(s.poisedSet, 1)
-    if abs(poly_eval(model, ((s.poisedSet(i,:)' - s.iterate) / s.radius)) - s.f(s.poisedSet(i,:)')) > .01
-      'model is constructed wrong'
-      i
+    expected = params.interp_eval(s.model, (s.poisedSet(i, :)' - s.model_center) / s.radius);
+    actual = s.vals(i);
+    
+    if abs(expected - actual) / actual > 1e-6
+      'Model is inaccurate'
+      throw 1
     end
   end
   

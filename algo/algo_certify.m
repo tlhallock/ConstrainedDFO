@@ -7,8 +7,8 @@ sort    = 1:npoints;
 
 if size(initialPoints, 1) != params.basis_dimension
   'not the right number of points 409187430'
-  size(initialPoints)
-  phi.basis_dimension
+  size(initialPoints, 1)
+  params.basis_dimension
 end
 
 p = params.basis_dimension;
@@ -20,35 +20,36 @@ V = zeros(h, p);
 %    V(i,1:p) = params.poly_basis_eval(phi, initialPoints(i,:)');
 %end
 
-
 V(1:npoints, :)      = params.basis_eval(initialPoints);
 V((npoints + 1):h,:) = eye(p, p);
+
+testV(params, V, initialPoints);
+
 for i=1:p
   maxVal = max(abs(V(i:npoints,i)));
   if maxVal < params.xsi
-    params.basi_extrema(V((npoints+1):h, i));
-  
+    extrema = params.interp_extrema(V((npoints+1):h, i));
+    
+    fVal = extrema.maxVal;
+    newX = extrema.maxAbsX;
   
     if abs(fVal) < params.xsi
       fail = 1;
       lagrange = -1;
       poisedSet = -1;
+      throw 1
       return;
     end
     
     sort(i) = -1;
     
-    saved = V;
-    for j = 1:phi.basis_dimension
-      V(i,j) = poly_eval(poly_clone(phi, V((npoints+1):h, j)'), newX);
-    end
+    V(i, :) = params.basis_eval(newX') * V((npoints+1):h, :);
     initialPoints(i, :) = newX';
     maxVal = max(abs(V(i:npoints,i)));
     
-    testV(V, i, phi, 'changing points', p, npoints, h, initialPoints, saved);
+    testV(params, V, initialPoints);
   end
         
-  saved = V;
   maxRow = i-1 + find(abs(V(i:npoints, i)) == maxVal)(1);
   if maxRow != i
     % Swap the rows in V
@@ -68,28 +69,27 @@ for i=1:p
     oldRow = sort(i);
     sort(maxRow) = oldRow;
     sort(i) = newRow;
+    
+    testV(params, V, initialPoints);
   end
-  testV(V, i, phi, 'row exchange', p, npoints, h, initialPoints, saved);
   
-  saved = V;
   V(:,i) = V(:,i) / V(i,i);
-  testV(V, i, phi, 'normalized', p, npoints, h, initialPoints, saved);
+  testV(params, V, initialPoints);
   
-  saved = V;
   for j=1:p
     if i == j
       continue
     end
     V(:,j) = V(:,j) - V(i, j)*V(:, i);
   end
-  testV(V, i, phi, 'reduced', p, npoints, h, initialPoints, saved);
+  testV(params, V, initialPoints);
 end
 
-for i = 1:phi.basis_dimension
-  lagrange{i} = poly_clone(phi, V ((npoints+1):h,i)');
-end
+%for i = 1:phi.basis_dimension
+%  lagrange{i} = poly_clone(phi, V ((npoints+1):h,i)');
+%end
 
-%lagrange = V ((npoints+1):h,:)';
+lagrange = V ((npoints+1):h,:)';
 poisedSet = initialPoints;
 
 endfunction
