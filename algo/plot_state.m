@@ -67,13 +67,13 @@ hold on
 %  scatter(s.poisedSet(:,1)', s.poisedSet(:, 2)');
 %  scatter(s.poisedSet(s.index, 1), s.poisedSet(s.index, 2), 'Color', [1 1 0], 'd');
 
+saveas(h, strcat(filename, '.png'), 'png');
 
 hold off
 
+sleep(1)
 
-
-saveas(h, filename, 'png');
-close(h);
+%close(h);
 
 
 endfunction

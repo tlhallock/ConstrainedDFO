@@ -29,7 +29,7 @@ function [params] = algo_params_create(dim, deg)
   params.omega = .5;
   params.radius_max = 50;
   
-  params.max_iters = 5;
+  params.max_iters = 15;
   
   params.tolerance = .005;
   

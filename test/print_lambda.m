@@ -1,4 +1,4 @@
-function print_lambda(params, s)
+function [lambda] = print_lambda(params, s)
 
   % Also not needed: simply calculates lambda
   % This should be done with the sort as well, and when the point is added...

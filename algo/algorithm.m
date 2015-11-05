@@ -11,9 +11,9 @@ function [results] = algorithm(params)
   
   for step = 1:params.max_iters
   
-      s = algo_clean_poised_set(s);
-    [params, s, results] = algo_poise(params, s, results);
-    linear = 1;
+%    s = algo_clean_poised_set(s);
+%    [params, s, results] = algo_poise(params, s, results);
+%    linear = 1;
     
     s.model = sum(diag(s.vals) * s.lagrange);
     
@@ -66,7 +66,7 @@ function [results] = algorithm(params)
       s.radius = min(params.gamma_inc * s.radius, params.radius_max);
     else
       if linear
-        s.radius = params.gamma * s.radius
+        s.radius = params.gamma * s.radius;
         
         s = algo_clean_poised_set(s);
       end
