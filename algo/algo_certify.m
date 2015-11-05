@@ -27,7 +27,6 @@ testV(params, V, s.shiftedSet);
 
 for i=1:p
   maxVal = max(abs(V(i:npoints,i)));
-  maxVal
   
   if maxVal < params.xsi
     extrema = params.interp_extrema(V((npoints+1):h, i));

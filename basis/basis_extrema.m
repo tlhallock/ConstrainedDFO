@@ -42,7 +42,7 @@ function [extrema] = basis_extrema(phi, coef, testPoints)
   
   
   % monty carlo optimization
-  for i = 1:10
+  for i = 1:5
     x0 = 2 * rand(nvars, 1) - 1;
     if norm(x0) >= 1
       x0 = .9 * x0 / norm(x0);
@@ -56,7 +56,7 @@ function [extrema] = basis_extrema(phi, coef, testPoints)
   end
   
   % monty carlo optimization
-  for i = 1:100
+  for i = 1:10
     x0 = 2 * rand(nvars, 1) - 1;
     if norm(x0) >= 1
       x0 = .9 * x0 / norm(x0);

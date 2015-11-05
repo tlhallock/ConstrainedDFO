@@ -20,5 +20,8 @@ deg = 2;
 
 params = algo_params_create(length(x0), deg);
 
+params.x0 = x0;
+params.f = f;
 
+algorithm(params);
 

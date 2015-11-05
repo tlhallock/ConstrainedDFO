@@ -24,7 +24,7 @@ end
   xp=s.radius*cos(ang);
   yp=s.radius*sin(ang);
 
-h = figure
+h = figure;
 
 subplot(1,2,1)
 
@@ -51,8 +51,8 @@ hold on
   points = s.poisedSet;
   
   if nargin > 3
-    points = [points; newX']
-    colors = [colors; [1 0 1]]
+    points = [points; newX'];
+    colors = [colors; [1 0 1]];
   end
   
   scatter (points(:, 1), points(:, 2), [],  colors, 'filled');
@@ -72,6 +72,8 @@ hold off
 
 
 
-saveas(h, strcat(filename, 'state.png', 'png'))
+saveas(h, filename, 'png');
+close(h);
+
 
 endfunction
