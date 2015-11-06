@@ -1,4 +1,4 @@
-function [extrema] = update_extrema(f1, nvars, extrema, guess)
+function [extrema] = update_extrema(f1, extrema, guess)
     f1Val = f1(guess);
     f2Val = abs(f1Val);
     

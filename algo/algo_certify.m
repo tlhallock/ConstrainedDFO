@@ -1,9 +1,9 @@
-function [s, sort, fail] = algo_certify(params, s)
+function [s, newpoints, fail] = algo_certify(params, s)
 
 fail    = 0;
 npoints = size(s.shiftedSet,1);
 dim     = size(s.shiftedSet,2);
-sort    = 1:npoints;
+newpoints    = [];
 
 if size(s.shiftedSet, 1) != params.basis_dimension
   'not the right number of points 409187430'
@@ -40,7 +40,7 @@ for i=1:p
       return;
     end
     
-    sort(i) = -1;
+    newpoints = [newpoints; newX'];
     
     V(i, :) = params.basis_eval(newX') * V((npoints+1):h, :);
     s.shiftedSet(i, :) = newX';
@@ -62,12 +62,6 @@ for i=1:p
     oldRow = s.shiftedSet(i,:);
     s.shiftedSet(maxRow,:) = oldRow;
     s.shiftedSet(i,:) = newRow;
-    
-    % Swap the vals indices
-    newRow = s.vals(maxRow);
-    oldRow = s.vals(i);
-    s.vals(maxRow) = oldRow;
-    s.vals(i) = newRow;
     
     testV(params, V, s.shiftedSet);
   end
