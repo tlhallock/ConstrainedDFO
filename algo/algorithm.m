@@ -11,9 +11,9 @@ function [results] = algorithm(params)
   
   for step = 1:params.max_iters
   
-%    s = algo_clean_poised_set(s);
-%    [params, s, results] = algo_poise(params, s, results);
-%    linear = 1;
+    s = algo_clean_poised_set(s);
+    [params, s, results] = algo_poise(params, s, results);
+    linear = 1;
     
     s.model = sum(diag(s.vals) * s.lagrange);
     
@@ -91,7 +91,7 @@ function [results] = algorithm(params)
     
     [_ index] = min(s.vals);
     s.index = index;
-  %  s = algo_clean_poised_set(s);
+    s = algo_clean_poised_set(s);
     
     results.iterations = results.iterations + 1;
   end

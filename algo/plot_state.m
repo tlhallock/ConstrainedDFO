@@ -73,7 +73,7 @@ hold off
 
 sleep(1)
 
-%close(h);
+close(h);
 
 
 endfunction
