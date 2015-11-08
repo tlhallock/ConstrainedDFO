@@ -21,4 +21,6 @@ for i = 1:length(x)
   end
 end
 
+z = z';
+
 surf(x,y,z);
