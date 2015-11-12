@@ -4,4 +4,4 @@ function [result] = ternary(cond, value1, value2)
   else
     result = value2;
   end
-endfunction
+end

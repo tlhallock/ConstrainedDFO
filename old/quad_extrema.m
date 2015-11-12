@@ -88,4 +88,4 @@ fVal = h(xmin);
 %  'not in domain'
 %end
 
-endfunction
+end

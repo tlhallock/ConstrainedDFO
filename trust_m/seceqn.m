@@ -16,5 +16,5 @@ value(isnan(value)) = 0;
 value = (1/delta)*unm - value;
 
 
-endfunction
+end
 
