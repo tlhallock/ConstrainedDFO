@@ -14,4 +14,4 @@ switch nargin
 end
 q.basis_dimension = p.basis_dimension;
 
-endfunction
+end

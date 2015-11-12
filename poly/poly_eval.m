@@ -2,7 +2,7 @@
 
 function [value] = poly_eval (p, x)
   value = sum(prod(repmat(x, 1, size(p.powers, 2)) .^ p.powers) .* p.coeffs);
-endfunction
+end
 
 
 %  if size(x, 1) == 1 && size(x,2) != 1

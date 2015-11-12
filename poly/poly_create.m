@@ -45,4 +45,4 @@ function p = poly_create(n, deg)
   
   p.basis_dimension = size(p.powers, 2);
 
-endfunction
+end

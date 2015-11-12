@@ -8,4 +8,4 @@ else
   y = outOfBounds;
 end
 
-endfunction
+end

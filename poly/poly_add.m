@@ -5,4 +5,4 @@ for i = 1:length(ps)
   p.coeffs = p.coeffs + interpolationVals(i) * ps{i}.coeffs;
 end
 
-endfunction
+end

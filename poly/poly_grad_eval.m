@@ -6,4 +6,4 @@ for var = 1:p.n
   q(var) = poly_eval(poly_diff(p, var), x);
 end
 
-endfunction
+end

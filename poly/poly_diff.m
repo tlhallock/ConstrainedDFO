@@ -10,4 +10,4 @@ function [derivative] = poly_diff(p, var)
     end
   end
 
-endfunction
+end
