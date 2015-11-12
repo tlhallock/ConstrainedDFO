@@ -1,8 +1,10 @@
-function test_interpolation(params, s)
+function test_interpolation(params, lagrange, vals, shiftedSet, poisedSet)
   % Code to test interpolation model...
+  
+  % doesn't have to be a for loop, if use model_multi
   for i = 1:size(s.poisedSet, 1)
-    expected = params.interp_eval(s.model, (s.poisedSet(i, :)' - s.model_center) / s.radius);
-    actual = s.vals(i);
+    expected = s.model(shiftedSet(i, :));
+    actual = mock_structure_get(vals, poisedSet(i, :));
     
     if abs(expected - actual) / actual > 1e-6
       'Model is inaccurate'
@@ -10,4 +12,4 @@ function test_interpolation(params, s)
     end
   end
   
-endfunction
+end

@@ -1,5 +1,7 @@
-function [structure] = mock_structure_create()
+function [structure] = mock_structure_create(xdim, ydim)
   structure = struct();
   structure.xs = [];
   structure.ys = [];
-endfunction
+  structure.xdim = xdim;
+  structure.ydim = ydim;
+end

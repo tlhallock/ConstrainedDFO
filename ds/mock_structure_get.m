@@ -1,14 +1,21 @@
-function [y minX minD] = mock_structure_get(st, x)
-  minX = -1;
-  minD = 1e300;
-  y = -1;
+function [ys, xs, ds] = mock_structure_get(st, x)
 
-  for i = 1:size(st.xs)
-    d = norm(st.xs(i, :) - x);
-    if d < minD
-      minX = st.xs(i, :);
-      y = st.ys(i, :);
-      minD = d;
+npoints = size(x, 1);
+ys = repmat(-1, npoints, st.ydim);
+xs = repmat(-1, npoints, st.xdim);
+ds = repmat(1e300, npoints, 1);
+
+for j = 1:npoints
+    for i = 1:size(st.xs, 1)
+        d = norm(st.xs(i, :) - x(j,:));
+        if d >= ds(j)
+            continue;
+        end
+        
+        xs(j, :) = st.xs(i, :);
+        ys(j, :) = st.ys(i, :);
+        ds(j) = d;
     end
-  end
-endfunction
+end
+
+end

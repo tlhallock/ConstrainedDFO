@@ -6,6 +6,7 @@
 phi = basis_create(2,2);
 v = rand(1, 6);
 r = 1;
+v = [1 0 0 0 0 0 ];
 
 [c b A] = basis_to_matrix(phi, v);
 [xmin fVal] = trust(b', 2 * A, r);

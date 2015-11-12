@@ -37,4 +37,24 @@ for i = 1:50
 end
 
 
-endfunction
+
+
+
+    
+    % test minimum
+%    for i = 1:100
+%        x0 = 2 * rand(size(s.poisedSet, 2), 1) - 1;
+%        if norm(x0) >= 1
+%            x0 = .9 * x0 / norm(x0);
+%        end
+%        if s.model(x0) < extrema.minVal
+%            throw(MException('DFO_Algorithm:test_minimum','found point less than minimum.'));
+%        end
+%    end
+
+
+
+
+
+
+end

@@ -4,4 +4,4 @@ function [q] = basis_grad_eval(p, model, x)
   for var = 1:p.n
     q(var) = sum(basis_eval(basis_diff(p, var), x') .* model);
   end
-endfunction
+end

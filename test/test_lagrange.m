@@ -1,13 +1,31 @@
-function test_lagrange(params, s)
+function test_lagrange(params, model_multi, model, shiftedSet, poisedSet, vals, f)
 
-  lagrangeValues = s.lagrange * params.basis_eval(...
-    (s.poisedSet - s.model_center') / s.model_radius)';
-  error = eye(size(lagrangeValues)) - lagrangeValues;
+% Now this actually tests the interpolation...
+
+
+  % Check that the model_multi returns values
+  lagrangeValues = model_multi(shiftedSet);
   
-  if norm(error) / norm(lagrangeValues) > 1e8
+  error = abs(vals - lagrangeValues);
+  
+  if error > 1e-8
     'lagrange property not satisfied'
     throw 1
   end
+  
+  for i = 1:size(shiftedSet, 1)
+     if abs(model(shiftedSet(i, :)') - vals(i)) > 1e-8
+         'interpolation not valid'
+         throw 1
+     end
+     
+     if abs(f(poisedSet(i, :)') - vals(i)) > 1e-8
+         'vals not valid'
+         throw 1
+     end
+  end
+    
+  % Test that each of the functions 
 
 %  % Test the lagrange property of the polynomials
 %  for i = 1:size(s.poisedSet, 1)
@@ -25,4 +43,4 @@ function test_lagrange(params, s)
 %      end
 %    end
 %  end
-endfunction
+end

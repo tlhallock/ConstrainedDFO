@@ -4,4 +4,4 @@
 
 function [y] = basis_interp_eval(phi, c, x)
   y = sum(diag(c) * basis_eval(phi, x')');
-endfunction
+end

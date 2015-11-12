@@ -26,12 +26,10 @@ for i = 1:size(phi.powers, 2)
     continue;
   end
   
-  
-  
   'Can only put a quadratic function into matrix form'
   throw 1
 end
 
 
 
-endfunction
+end

@@ -22,7 +22,7 @@ function [params] = algo_params_create(dim, deg)
   params.gamma_inc = 1.5;
   
   params.eps_c = 5e-2;
-  params.lambda_max = 50;
+  params.lambda_max = 1.5;
   
   params.mu = 5;
   params.beta = 3

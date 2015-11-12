@@ -10,4 +10,4 @@ function [derivative] = basis_diff(p, var)
     end
   end
 
-endfunction
+end

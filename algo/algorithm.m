@@ -1,99 +1,85 @@
 function [results] = algorithm(params)
-  
-  results = algo_results_create();
-  s = algo_state_create(params);
-  
-  s.vals(:) = params.f(params.x0);
-  results.fvals = results.fvals + 1;
-  
-  [params, s, results] = algo_poise(params, s, results);
-  linear = 1;
-  
-  for step = 1:params.max_iters
-  
-    s = algo_clean_poised_set(s);
-    [params, s, results] = algo_poise(params, s, results);
-    linear = 1;
+
+results = algo_results_create();
+s = algo_state_create(params);
+
+s.vals = mock_structure_add(s.vals, params.x0', params.f(params.x0));
+results.fvals = results.fvals + 1;
+fullyLinear = false;
+
+for step = 1:params.max_iters
+    % Note: this will improve the set if the set is not poised AT ALL
+    [s, results, improved] = algo_create_model(params, s, results, false);
+    fullyLinear = fullyLinear || improved;
     
-    s.model = sum(diag(s.vals) * s.lagrange);
+    plot_state(s, strcat('imgs/model_', int2str(results.iterations)));
+    %    test_interpolation(params, s);
     
-    plot_state(params, s, strcat('imgs/model_', int2str(results.iterations)));
-    
-    test_interpolation(params, s);
-    
-    g = params.interp_grad_eval(s.model, ((s.poisedSet(s.index, :) - s.model_center)/s.model_radius)' );
-    while norm(g) < params.eps_c ...
-          && params.mu * norm(g) < s.radius  ...
-          && results.iterations < params.max_iters ...
-          && s.radius < params.tolerance
-      s.radius = min(max(...
-        s.radius * s.omega,... 
-          s.beta * norm(g)), s.radius);
-      s = algo_clean_poised_set(s);
-      [params, s, results, fail] = algo_poise(params, s, results);
-      results.iterations = results.iterations + 1;
-      linear = 1;
+%            && s.radius > params.mu * norm(s.g)
+    while norm(s.g) < params.eps_c ...
+            && (~fullyLinear || s.radius > params.mu * norm(s.g))
+        % Could have something about s.radius < params.tolerance?
+        s.radius = min(max(...
+            s.radius * params.omega,...
+            params.beta * norm(s.g)), s.radius);
+        [s, results, fullyLinear] = algo_create_model(params, s, results, true);
     end
     
     % open ball, closed ball
-  %  inter = @(x)(poly_eval(model, (x - s.model_center) / s.model_radius));
-  %  [sqpIterate, sqpObj, sqpInfo, sqpIter, sqpNf, sqpLambda] = ...
-  %      sqp(s.model_center, inter, [], [], 
-  %      s.xmin - s.radius,
-  %      s.xmin + s.radius);
-    extrema = params.interp_extrema(s.model);
+    %  inter = @(x)(poly_eval(model, (x - s.model_center) / s.model_radius));
+    %  [sqpIterate, sqpObj, sqpInfo, sqpIter, sqpNf, sqpLambda] = ...
+    %      sqp(s.model_center, inter, [], [],
+    %      s.xmin - s.radius,
+    %      s.xmin + s.radius);
+    extrema = params.interp_extrema(s.model_coeff);
     
-    % test minimum
-    for i = 1:1000
-      x0 = 2 * rand(size(s.poisedSet, 2), 1) - 1;
-      if norm(x0) >= 1
-        x0 = .9 * x0 / norm(x0);
-      end
-      if params.interp_eval(s.model, x0) < extrema.minVal
-        'found smaller point'
-      end
-    end
+    currentX   = s.model_center;
+    currentVal = mock_structure_get(s.vals, currentX');
     
-    newX = extrema.minX * s.model_radius + s.model_center;
-    
+    newX = extrema.minX * s.radius + s.model_center;
     newVal = params.f(newX);
-    results.fvals = results.fvals + 1;
-    rho = (s.vals(s.index) - newVal) / (s.vals(s.index) - extrema.minVal);
     
-    plot_state(params, s, strcat('imgs/newpoint_', int2str(results.iterations)), newX);
+    results.fvals = results.fvals + 1;
+    s.vals = mock_structure_add(s.vals, newX', newVal);
+    
+    
+    rho = (currentVal - newVal) / ...
+        (s.model((currentX - s.model_center) / s.radius) - extrema.minVal);
+    
+    'last value:'
+    currentVal
+    'new value:'
+    newVal
+    'lat value:'
+    s.model((currentX - s.model_center) / s.radius)
+    'expected:'
+    extrema.minVal
+    
+    rho = (currentVal - newVal) / (s.model(currentX) - extrema.minVal)
+    
+    plot_state(s, strcat('imgs/newpoint_', int2str(results.iterations)), newX);
     
     if rho >= params.eta1
-      s.radius = min(params.gamma_inc * s.radius, params.radius_max);
+        s.radius = min(params.gamma_inc * s.radius, params.radius_max);
+        s.model_center = newX;
+        fullyLinear = falsefalse;
     else
-      if linear
-        s.radius = params.gamma * s.radius;
-        
-        s = algo_clean_poised_set(s);
-      end
+        if fullyLinear
+            if rho >= params.eta0
+                s.model_center = newX;
+            end
+            s.radius = params.gamma * s.radius;
+            fullyLinear = false;
+        else
+            [s, results, fullyLinear] = algo_create_model(params, s, results, true);
+        end
     end
     
-    if rho > params.eta0
-      % replace the point farthest away from the current iterate
-      [_ mIndex] = max(arrayfun(@(idx) norm(s.poisedSet(idx, :) - newX'), 1:size(s.poisedSet, 1)));
-      
-      s.poisedSet(mIndex, :) = s.poisedSet(1,:);
-      s.vals(mIndex) = s.vals(1);
-      
-      s.poisedSet(1, :) = newX';
-      s.vals(1) = newVal;
-      linear = 0;
-    end
-    
-    if rho < params.eta1 && !linear
-        [params, s, results, fail] = algo_poise(params, s, results);
-        linear = 1;
-    end
-    
-    [_ index] = min(s.vals);
-    s.index = index;
-    s = algo_clean_poised_set(s);
-    
+    %    s = algo_clean_poised_set(s);
     results.iterations = results.iterations + 1;
-  end
-  
-endfunction
+end
+
+end
+
+
+

@@ -3,4 +3,4 @@ function [results] = algo_results_create()
   results.xmin = -1;
   results.iterations = 0;
   results.fmin = -1;
-endfunction
+end

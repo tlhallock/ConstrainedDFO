@@ -8,4 +8,4 @@ function test_sort(s)
       s.vals(i) = s.f(s.poisedSet(i, :));
     end
   end
-endfunction
+end
