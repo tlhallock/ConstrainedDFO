@@ -1,4 +1,4 @@
-function [shiftedSet, sort, lagrange, lambdas, poised] = algo_certify(params, shiftedSet)
+function [shiftedSet, sort, lagrange, lambdas, poised] = algo_certify(params, shiftedSet, improve)
 
 poised = true;
 npoints = size(shiftedSet, 1);
@@ -26,6 +26,16 @@ while ~certified
     for i=1:p
         maxVal = max(abs(V(i:npoints,i)));
         if maxVal < params.xsi
+            if ~improve
+                % Set not poised...
+                shiftedSet = [];
+                sort = [];
+                lagrange = [];
+                lambdas = [];
+                poised = false;
+                return;
+            end
+            
             poised = false;
             
             % if not poised, have to replace this point
@@ -67,7 +77,7 @@ while ~certified
     for i = 1:npoints
         extrema = params.interp_extrema(lagrange(i , :));
         lambdas(i) = extrema.maxVal;
-        if lambdas(i) > params.lambda_max
+        if lambdas(i) > params.lambda_max && improve
             shiftedSet(i, :) = extrema.maxX';
             certified = false;
         end

@@ -12,7 +12,6 @@ for step = 1:params.max_iters
     [s, results, improved] = algo_create_model(params, s, results, false);
     fullyLinear = fullyLinear || improved;
     
-    plot_state(s, strcat('imgs/model_', int2str(results.iterations)));
     %    test_interpolation(params, s);
     
 %            && s.radius > params.mu * norm(s.g)
@@ -46,26 +45,15 @@ for step = 1:params.max_iters
     rho = (currentVal - newVal) / ...
         (s.model((currentX - s.model_center) / s.radius) - extrema.minVal);
     
-    'last value:'
-    currentVal
-    'new value:'
-    newVal
-    'lat value:'
-    s.model((currentX - s.model_center) / s.radius)
-    'expected:'
-    extrema.minVal
-    
-    rho = (currentVal - newVal) / (s.model(currentX) - extrema.minVal)
-    
     plot_state(s, strcat('imgs/newpoint_', int2str(results.iterations)), newX);
     
     if rho >= params.eta1
         s.radius = min(params.gamma_inc * s.radius, params.radius_max);
         s.model_center = newX;
-        fullyLinear = falsefalse;
+        fullyLinear = false;
     else
         if fullyLinear
-            if rho >= params.eta0
+            if rho >= params.eta0 % I don't like this, y not check take any improvement better than eta1, we are going to improve the model anyway... (Move this if statement outside the fully linear check.)
                 s.model_center = newX;
             end
             s.radius = params.gamma * s.radius;

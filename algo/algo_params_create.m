@@ -34,4 +34,6 @@ function [params] = algo_params_create(dim, deg)
   params.tolerance = .005;
   
   params.xsi = 1e-4;
+  
+  params.only_in_trust_region = false;
 end

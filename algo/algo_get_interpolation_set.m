@@ -13,8 +13,11 @@ end
 
 % This would limit the set to only including those points that are within
 % the current radius:
-bestSet = mock_structure_find_all(s.vals, s.model_center, params.basis_dimension, s.radius);
-%bestSet = mock_structure_find_all(s.vals, s.model_center, params.basis_dimension);
+if params.only_in_trust_region
+    bestSet = mock_structure_find_all(s.vals, s.model_center, params.basis_dimension, s.radius);
+else
+    bestSet = mock_structure_find_all(s.vals, s.model_center, params.basis_dimension);
+end
 bestSet = fillMat(bestSet, params.basis_dimension);
 
 end

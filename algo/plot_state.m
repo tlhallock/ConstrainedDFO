@@ -93,4 +93,7 @@ hold off
 close(h);
 
 
+
+algo_print(s, strcat(filename, '.txt'));
+
 end
