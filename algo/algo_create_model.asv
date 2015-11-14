@@ -6,16 +6,7 @@ poisedSet = algo_get_interpolation_set(params, s);
 
 if params.only_in_trust_region
    for i = 1:size(poisedSet, 1)
-       if norm(poisedSet(i, :) - s.model_center') > s.radius
-           poisedSet(i, :)
-           s.model_center'
-           poisedSet(i, :) - s.model_center'
-           norm(poisedSet(i, :) - s.model_center')
-           s.radius
-           'Picked points too far away from the model center'
-           algo_get_interpolation_set(params, s)
-           throw 1
-       end
+       d
    end
 end
     
@@ -59,9 +50,6 @@ for i = 1:length(sort)
         x = poisedSet(-sort(i), :);
         s.vals = mock_structure_add(s.vals, x, s.f(x'));
         results.fvals = results.fvals + 1;
-        
-        % Here we should see if the points are already in the
-        % datastructure...
     end
 end
 

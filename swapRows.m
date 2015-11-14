@@ -1,5 +1,5 @@
 function [mat] = swapRows(mat, idx1, idx2)
-    if idx1 == idx2
+    if idx1 == idx2 || idx1 < 1 || idx2 < 1
         return;
     end
     row1 = mat(idx1,:);

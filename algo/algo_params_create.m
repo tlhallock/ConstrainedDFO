@@ -22,18 +22,18 @@ function [params] = algo_params_create(dim, deg)
   params.gamma_inc = 1.5;
   
   params.eps_c = 5e-2;
-  params.lambda_max = 1.5;
+  params.lambda_max = 15;
   
   params.mu = 5;
   params.beta = 3
   params.omega = .5;
   params.radius_max = 50;
   
-  params.max_iters = 15;
+  params.max_iters = 10;
   
   params.tolerance = .005;
   
   params.xsi = 1e-4;
   
-  params.only_in_trust_region = false;
+  params.only_in_trust_region = true;
 end

@@ -7,7 +7,12 @@ ds = sqrt(sum((diffs.^2), 2));
 %expensive
 [~, idx] = sort(ds);
 if nargin > 3 && r > 0
-    idx = idx(ds < r);
+%    nidx = zeros(size(idx));
+%    for i = 1:nidx
+%        if ds(idx(i)) < r
+%            nd
+%    end
+    idx = idx(ds(idx) < r);
 end
 
 nret = min(num, length(idx));

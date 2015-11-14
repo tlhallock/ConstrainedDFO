@@ -14,12 +14,12 @@ function test_lagrange(params, model_multi, model, shiftedSet, poisedSet, vals, 
   end
   
   for i = 1:size(shiftedSet, 1)
-     if abs(model(shiftedSet(i, :)') - vals(i)) > 1e-8
+     if abs(model(shiftedSet(i, :)') - vals(i)) / abs(vals(i)) > 1e-8
          'interpolation not valid'
          throw 1
      end
      
-     if abs(f(poisedSet(i, :)') - vals(i)) > 1e-8
+     if abs(f(poisedSet(i, :)') - vals(i)) / abs(vals(i)) > 1e-8
          'vals not valid'
          throw 1
      end
