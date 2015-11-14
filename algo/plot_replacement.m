@@ -9,12 +9,7 @@ colors = [];
 
 
 % Need to know the denominator of relative difference...
-relativeSize = zeros(1, size(oldSet, 2));
-for i = 1:sizeOld
-    for j = 1:sizeOld
-        relativeSize = max(relativeSize, abs(oldSet(i,:) - oldSet(j,:)));
-    end
-end
+relativeSize = get_relative_difference(oldSet);
 
 inOld = repmat(false, 1, sizeNew);
 for i = 1:sizeOld
