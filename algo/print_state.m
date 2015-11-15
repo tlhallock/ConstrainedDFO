@@ -1,4 +1,4 @@
-function algo_print(s, filename)
+function print_state(s, filename)
 
 %fileID = fopen(filename,'w');
 %

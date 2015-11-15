@@ -1,7 +1,7 @@
-function plot_state(s, filename, newX)
+function [newplotnum] = plot_state(s, newX)
 
 m = 5;
-npoints = 100;
+npoints = 50;
 x = linspace(-m, m, npoints);
 y = linspace(-m, m, npoints);
 z1 = zeros(length(x), length(y));
@@ -62,14 +62,21 @@ npoints = size(points, 1);
 colors = repmat([1 0 0], npoints, 1);
 
 % Color the center differently
+center_is_in_model = false;
 for i = 1:npoints;
     if norm(points(i, :) - s.model_center') / norm(s.model_center') < 1e-6
         colors(i, :) = [0 1 0];
+        center_is_in_model = true;
         break;
     end
 end
 
-if nargin > 2
+if ~center_is_in_model
+    points = [points; s.model_center'];
+    colors = [colors;[1 1 1]];
+end
+
+if nargin > 1
     points = [points; newX'];
     colors = [colors; [1 0 1]];
 end
@@ -86,14 +93,14 @@ scatter (points(:, 1), points(:, 2), [],  colors, 'filled');
 %  scatter(s.poisedSet(:,1)', s.poisedSet(:, 2)');
 %  scatter(s.poisedSet(s.index, 1), s.poisedSet(s.index, 2), 'Color', [1 1 0], 'd');
 
-saveas(h, strcat(filename, '.png'), 'png');
+
+newplotnum = s.plot_number + 1;
+saveas(h, strcat(strcat('imgs/', int2str(newplotnum)), '_newpoint.png'), 'png');
 
 hold off
 
 close(h);
 
-
-
-algo_print(s, strcat(filename, '.txt'));
+%algo_print(s, strcat(filename, '.txt'));
 
 end

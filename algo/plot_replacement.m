@@ -1,4 +1,6 @@
-function plot_replacement(oldSet, newSet, vals, sort)
+function [newplotnum] = plot_replacement(s, newSet)
+
+oldSet = s.interpolation_set;
 
 sizeOld = size(oldSet, 1);
 sizeNew = size(newSet, 1);
@@ -11,19 +13,12 @@ colors = [];
 % Need to know the denominator of relative difference...
 relativeSize = get_relative_difference(oldSet);
 
-inOld = repmat(false, 1, sizeNew);
+inOld = false(1, sizeNew);
 for i = 1:sizeOld
     found = false;
     for j = 1:sizeNew
         if max(abs(( newSet(j,:) - oldSet(i, :)) ./ relativeSize)) < 1e-6
             % These vectors are the same...
-            
-            % Make sure they are not in sort
-            
-            % TODO:
-            % test if in vals
-            % Test if in sort
-            
             inOld(j) = true;
             found = true;
             break;
@@ -32,9 +27,6 @@ for i = 1:sizeOld
     
     xs = [xs; oldSet(i, 1)];
     ys = [ys; oldSet(i, 2)];
-    
-    oldSet(i, :)
-    found
     
     if found
         % nothing changed
@@ -56,7 +48,16 @@ for i = 1:sizeNew
     colors = [colors ; [0 1 0]];
 end
 
+
+hold on
+h = figure;
 scatter(xs, ys, [], colors);
+newplotnum = s.plot_number + 1;
+saveas(h, strcat(strcat('imgs/', int2str(newplotnum)), '_improvement.png'), 'png');
+hold off
+close(h);
+
+
 
 %
 %

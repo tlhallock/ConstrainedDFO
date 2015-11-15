@@ -11,6 +11,7 @@ for i = 1:siz
     y = s.f(x);
     if norm(y - s.vals.ys(i,:)') / norm(y) > 1e-8;
         'The datastructure does not hold the right values'
+        throw 1
     end
 end
 
@@ -29,6 +30,7 @@ for i = 1:10
         y = s.f(test(j, :)');
         if norm(y - vals(j,:)') / norm(y)> 1e-8;
             'The datastructure does not hold the right values'
+            throw 1
         end
     end
 end

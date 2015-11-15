@@ -25,15 +25,16 @@ function [params] = algo_params_create(dim, deg)
   params.lambda_max = 15;
   
   params.mu = 5;
-  params.beta = 3
+  params.beta = 3;
   params.omega = .5;
   params.radius_max = 50;
   
   params.max_iters = 10;
   
-  params.tolerance = .005;
+  params.tolerance = 1e-6;
   
   params.xsi = 1e-4;
   
-  params.only_in_trust_region = true;
+  params.outer_trust_region = 2;
+  params.max_improvement_iterations = 100;
 end
