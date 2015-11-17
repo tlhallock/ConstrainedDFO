@@ -1,5 +1,5 @@
 
-function [params] = algo_params_create(dim, deg)
+function [params] = algo_create_params(dim, deg)
   params = struct();
   
   params.dim = dim;
@@ -22,16 +22,16 @@ function [params] = algo_params_create(dim, deg)
   params.gamma_inc = 1.5;
   
   params.eps_c = 5e-2;
-  params.lambda_max = 15;
+  params.lambda_max = 10;
   
   params.mu = 5;
-  params.beta = 3;
+  params.beta = 1;
   params.omega = .5;
   params.radius_max = 50;
   
-  params.max_iters = 10;
+  params.max_iters = 100;
   
-  params.tolerance = 1e-6;
+  params.tolerance = 1e-12;
   
   params.xsi = 1e-4;
   

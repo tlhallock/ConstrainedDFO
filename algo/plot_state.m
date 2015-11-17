@@ -1,9 +1,15 @@
-function [newplotnum] = plot_state(s, newX)
+function [newplotnum] = plot_state(s, params, newX)
 
-m = 5;
+
+delta = max(.1, 2 * params.outer_trust_region * s.radius);
+
+lbx = s.model_center(1) - delta;
+ubx = s.model_center(1) + delta;
+lby = s.model_center(2) - delta;
+uby = s.model_center(2) + delta;
 npoints = 50;
-x = linspace(-m, m, npoints);
-y = linspace(-m, m, npoints);
+x = linspace(lbx, ubx, npoints);
+y = linspace(lby, uby, npoints);
 z1 = zeros(length(x), length(y));
 z2 = zeros(length(x), length(y));
 
@@ -25,27 +31,26 @@ ang=0:0.01:2*pi;
 xp=s.radius*cos(ang);
 yp=s.radius*sin(ang);
 
+
+% first plot
+%surf(x,y,z1);
+
+
+
+
+
 h = figure;
-
-
-
 
 
 
 subplot(1,2,1)
 
+plot(s.model_center(1)+xp, s.model_center(2)+yp, 'Color', [1 0 0]);
 hold on
 % first plot
 contourf(x,y,z1);
 
-plot(s.model_center(1)+xp, s.model_center(2)+yp, 'Color', [1 0 0]);
 hold off
-
-
-
-
-
-
 
 subplot(1,2,2)
 % second plot
@@ -76,7 +81,7 @@ if ~center_is_in_model
     colors = [colors;[1 1 1]];
 end
 
-if nargin > 1
+if nargin > 2
     points = [points; newX'];
     colors = [colors; [1 0 1]];
 end

@@ -1,7 +1,7 @@
 function [results] = algo(params)
 
-results = algo_results_create();
-s = algo_state_create(params);
+results = algo_create_results();
+s = algo_create_state(params);
 
 for step = 1:params.max_iters
     % Create the model
@@ -15,11 +15,11 @@ for step = 1:params.max_iters
     while norm(s.g) < params.eps_c ...
             && (~s.fullyLinear || s.radius > params.mu * norm(s.g))
         % Could have something about s.radius < params.tolerance?
-        s.radius = min(max(...
-            s.radius * params.omega,...
-            params.beta * norm(s.g)), s.radius);
+        s.radius = min(...
+            max(s.radius * params.omega, params.beta * norm(s.g)), ...
+            s.radius);
         s = algo_model_improve(params, s);
-        s.plot_number = plot_state(s);
+        s.plot_number = plot_state(s, params);
         
         s.radius
         
@@ -38,10 +38,14 @@ for step = 1:params.max_iters
     [s.vals, newVal] = mock_structure_add(s.vals, newX', s.f, s.radius);
     newVal = newVal';
     
+    results.xs = [results.xs; newX'];
+    
     rho = (currentVal - newVal) / ...
         (s.model((currentX - s.model_center) / s.radius) - extrema.minVal);
     
-    s.plot_number = plot_state(s, newX);
+    rho
+    
+    s.plot_number = plot_state(s, params, newX);
     
     if rho >= params.eta1
         s.radius = min(params.gamma_inc * s.radius, params.radius_max);

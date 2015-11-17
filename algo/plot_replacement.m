@@ -1,4 +1,4 @@
-function [newplotnum] = plot_replacement(s, newSet)
+function [newplotnum] = plot_replacement(s, params, newSet)
 
 oldSet = s.interpolation_set;
 
@@ -49,9 +49,15 @@ for i = 1:sizeNew
 end
 
 
-hold on
+ang=0:0.01:2*pi;
+xp = s.radius*cos(ang);
+yp = s.radius*sin(ang);
+
 h = figure;
-scatter(xs, ys, [], colors);
+scatter(xs, ys, [], colors, 'filled');
+hold on
+plot( s.model_center(1) + xp, s.model_center(2) + yp, 'Color', [1 0 0]);
+plot( s.model_center(1) + params.outer_trust_region * xp, s.model_center(2) + params.outer_trust_region * yp, 'Color', [1 0 1]);
 newplotnum = s.plot_number + 1;
 saveas(h, strcat(strcat('imgs/', int2str(newplotnum)), '_improvement.png'), 'png');
 hold off

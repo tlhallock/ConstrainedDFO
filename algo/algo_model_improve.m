@@ -53,7 +53,7 @@ end
 
 
 newPoisedSet = unshift_set(shiftedSet, s.model_center', s.radius);
-s.plot_number = plot_replacement(s, newPoisedSet);
+s.plot_number = plot_replacement(s, params, newPoisedSet);
 s.interpolation_set = newPoisedSet;
 
 % Evaluate the objective at these points as well

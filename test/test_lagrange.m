@@ -6,7 +6,7 @@ function test_lagrange(params, model_multi, model, shiftedSet, poisedSet, vals, 
   % Check that the model_multi returns values
   lagrangeValues = model_multi(shiftedSet);
   
-  error = abs(vals - lagrangeValues);
+  error = abs(vals - lagrangeValues) / norm(lagrangeValues);
   
   if error > 1e-8
     'lagrange property not satisfied'
@@ -14,15 +14,9 @@ function test_lagrange(params, model_multi, model, shiftedSet, poisedSet, vals, 
   end
   
   for i = 1:size(shiftedSet, 1)
-     if abs(model(shiftedSet(i, :)') - vals(i)) / abs(vals(i)) > 1e-8
-         'interpolation not valid'
-         throw 1
-     end
-     
-     if abs(f(poisedSet(i, :)') - vals(i)) / abs(vals(i)) > 1e-8
-         'vals not valid'
-         throw 1
-     end
+      % interpolation not valid
+      assert_close(model(shiftedSet(i, :)'), vals(i));
+      assert_close(f(poisedSet(i, :)'), vals(i));
   end
     
   % Test that each of the functions 

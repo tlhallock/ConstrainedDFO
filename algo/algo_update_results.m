@@ -6,6 +6,7 @@ results.fmin = min(s.vals.ys);
 results.fmin = minVal;
 results.xmin = xmin;
 results.fvals = size(s.vals.ys, 1);
+results.g = s.g;
 
 end
 
